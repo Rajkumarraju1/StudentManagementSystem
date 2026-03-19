@@ -1,0 +1,22 @@
+.list{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color:#f4f8fb;
+
+      & table{
+        background-color:white;
+         
+        
+         box-shadow: 8px 8px 15px  cadetblue;
+         & th{
+            background-color: #2563eb;
+            color: white;
+         }
+         & td{
+            color: #1f2937;
+            
+         }
+      }
+}
