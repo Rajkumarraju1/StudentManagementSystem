@@ -1,13 +1,13 @@
+# Use Java 17
 FROM eclipse-temurin:21-jdk-alpine
 
+# Set working directory
 WORKDIR /app
 
+# Copy all files
 COPY . .
 
-# 🔥 FIX: give permission to mvnw
-RUN chmod +x mvnw
-
-# Build project
+# Build the project
 RUN ./mvnw clean package -DskipTests
 
 # Run app
