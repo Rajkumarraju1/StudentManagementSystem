@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/designation") 
-@CrossOrigin(origins = "https://student-management-system-woad-nine.vercel.app")
+@CrossOrigin(origins = "*")
 public class DesignationController {
 	
 	@Autowired
