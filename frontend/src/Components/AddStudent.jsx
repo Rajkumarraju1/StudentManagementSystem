@@ -1,57 +1,50 @@
 import { useEffect, useState } from "react"
-import { saveStudent,updateStudent,saveDesignation,getStudentById } from "./Servers"
-import ListOfStudent from "./ListOfStudents";
-import {  useNavigate, useParams } from "react-router-dom";
+import { saveStudent, updateStudent, saveDesignation, getStudentById } from "./Servers"
+import { useNavigate, useParams } from "react-router-dom";
 
-const AddStudent=()=>{
-    const navigate=useNavigate();
-    const {id} =useParams();
+const AddStudent = () => {
+    const navigate = useNavigate();
+    const { id } = useParams();
 
-    const[student, setStudent] = useState({
-        name:"",
-        email:"",
-        section:"",
-        ph_number:"",
+    const [student, setStudent] = useState({
+        name: "",
+        email: "",
+        section: "",
+        ph_number: "",
         designation: ""
     });
-    const[designation, setDesignation] = useState([]);
-    useEffect(()=>{
+    const [designation, setDesignation] = useState([]);
+
+    useEffect(() => {
         saveDesignation()
-            .then(res=>{
+            .then(res => {
                 console.log("Fetched designations:", res.data);
                 setDesignation(res.data);
             })
-            .catch(err => {
-                console.error("Error fetching designations:", err);
-                alert("Error fetching designations: " + (err.response?.data?.message || err.message));
-            });
+            .catch(err => alert("Error fetching designations: " + err.message));
 
-        if(id){
+        if (id) {
             getStudentById(id)
-                .then(res=>{
-                    setStudent({...res.data, designation:res.data.designation?.id});
+                .then(res => {
+                    setStudent({ ...res.data, designation: res.data.designation?.id });
                 })
-                .catch(err => {
-                    console.error("Error fetching student by ID:", err);
-                    alert("Error fetching student data: " + (err.response?.data?.message || err.message));
-                });
+                .catch(err => alert("Error fetching student: " + err.message));
         }
-    },[id]);
+    }, [id]);
 
-    
-    
-    const handelChanges=(e=>{
-        setStudent({...student,[e.target.name]: e.target.value})
+    const handelChanges = (e => {
+        setStudent({ ...student, [e.target.name]: e.target.value })
     })
-    const handleSubmit=((e)=>{
+
+    const handleSubmit = ((e) => {
         e.preventDefault();
-        
+
         if (!student.designation) {
             alert("Please select a designation.");
             return;
         }
 
-        const payload={
+        const payload = {
             name: student.name,
             email: student.email,
             section: student.section,
@@ -61,47 +54,58 @@ const AddStudent=()=>{
             }
         }
 
-     if(id){
-            updateStudent(id,payload)
-        .then(()=>{
-            alert("Student updated")
-            navigate("/allStudent")
-    })
-        .catch((err)=>alert("error while adding Student"+err))
-     }else{
-        saveStudent(payload)
-        .then(()=>{
-            alert("Student added")
-            navigate('/allStudent');
-        })
-        .catch((err)=>alert("error while adding"+err))
-     }
+        const action = id ? updateStudent(id, payload) : saveStudent(payload);
+        
+        action.then(() => {
+            alert(id ? "Student updated" : "Student added");
+            navigate("/allStudent");
+        }).catch((err) => alert("Error: " + err.message));
     })
 
+    return (
+        <div className="container animate-fade">
+            <div className="glass form-card">
+                <h2 style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
+                    {id ? 'Update Student' : 'Register Student'}
+                </h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="input-container">
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: '500' }}>Full Name</label>
+                        <input type="text" name="name" value={student.name} placeholder="e.g. John Doe" onChange={handelChanges} />
+                    </div>
 
+                    <div className="input-container">
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: '500' }}>Email Address</label>
+                        <input type="email" name="email" value={student.email} placeholder="john@example.com" onChange={handelChanges} />
+                    </div>
 
+                    <div className="input-container">
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: '500' }}>Section</label>
+                        <input type="text" name="section" value={student.section} placeholder="e.g. A" onChange={handelChanges} />
+                    </div>
 
+                    <div className="input-container">
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: '500' }}>Phone Number</label>
+                        <input type="number" name="ph_number" value={student.ph_number} placeholder="1234567890" onChange={handelChanges} />
+                    </div>
 
-    return(
-        <>
-        <form onSubmit={handleSubmit}>
-            <input type="text" name="name" value={student.name} placeholder="enter the name"  onChange={handelChanges}/><br />
-            <input type="email" name="email" value={student.email} placeholder="enter email" onChange={handelChanges}/><br />
-            <input type="text" name="section" value={student.section} placeholder="enter your Section" onChange={handelChanges} /> <br />
-            <input type="number" name="ph_number" value={student.ph_number} placeholder="enter your number" onChange={handelChanges}/><br />
-            <select name="designation" value={student.designation} onChange={handelChanges} >
-                <option value="">select an option</option>
-                {
-                    designation.map(d=>(
-                        <option  key={d.id} value={d.id}>
-                            {d.title}
-                        </option>
-                    ))
-                }
-            </select>
-             <button type="submit"  >save  </button>
-        </form>
-        </>
+                    <div className="input-container">
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: '500' }}>Designation</label>
+                        <select name="designation" value={student.designation} onChange={handelChanges}>
+                            <option value="">Select a designation...</option>
+                            {designation.map(d => (
+                                <option key={d.id} value={d.id}>{d.title}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <button type="submit" className="btn" style={{ width: '100%', marginTop: '1rem' }}>
+                        {id ? 'Update Record' : 'Create Record'}
+                    </button>
+                </form>
+            </div>
+        </div>
     )
 }
-export default AddStudent
+
+export default AddStudent;
