@@ -31,6 +31,13 @@ public class StudentController {
 	
 	@PostMapping
 	public Student savestu(@RequestBody Student stu) {
+		if (stu.getDesignation() == null || stu.getDesignation().getId() == null || stu.getDesignation().getId() == 0) {
+			stu.setDesignation(null); // Save without designation if invalid
+		} else {
+			// Optionally verify if it exists, though seeding should cover it
+			Designation des = drepo.findById(stu.getDesignation().getId()).orElse(null);
+			stu.setDesignation(des);
+		}
 		return srepo.save( stu);
 	}
 	@DeleteMapping("/{id}")

@@ -43,6 +43,11 @@ const AddStudent=()=>{
     const handleSubmit=((e)=>{
         e.preventDefault();
         
+        if (!student.designation) {
+            alert("Please select a designation.");
+            return;
+        }
+
         const payload={
             name: student.name,
             email: student.email,
