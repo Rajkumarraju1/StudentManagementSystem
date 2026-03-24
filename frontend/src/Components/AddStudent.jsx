@@ -17,7 +17,10 @@ const AddStudent=()=>{
     const[designation, setDesignation] = useState([]);
     useEffect(()=>{
         saveDesignation()
-            .then(res=>setDesignation(res.data))
+            .then(res=>{
+                console.log("Fetched designations:", res.data);
+                setDesignation(res.data);
+            })
             .catch(err => {
                 console.error("Error fetching designations:", err);
                 alert("Error fetching designations: " + (err.response?.data?.message || err.message));
