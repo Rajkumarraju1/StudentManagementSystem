@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/designation")
-@CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("/designation") 
+@CrossOrigin(origins = "https://student-management-system-woad-nine.vercel.app")
 public class DesignationController {
 	
 	@Autowired
