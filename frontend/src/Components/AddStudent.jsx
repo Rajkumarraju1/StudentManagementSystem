@@ -18,7 +18,6 @@ const AddStudent = () => {
     useEffect(() => {
         saveDesignation()
             .then(res => {
-                console.log("Fetched designations:", res.data);
                 setDesignation(res.data);
             })
             .catch(err => alert("Error fetching designations: " + err.message));
