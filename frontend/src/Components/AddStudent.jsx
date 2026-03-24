@@ -16,15 +16,23 @@ const AddStudent=()=>{
     });
     const[designation, setDesignation] = useState([]);
     useEffect(()=>{
-        saveDesignation().then(res=>setDesignation(res.data))
-        getStudentById().then(res=>{
-             if( id){
-                getStudentById(id).then(res=>{
+        saveDesignation()
+            .then(res=>setDesignation(res.data))
+            .catch(err => {
+                console.error("Error fetching designations:", err);
+                alert("Error fetching designations: " + (err.response?.data?.message || err.message));
+            });
+
+        if(id){
+            getStudentById(id)
+                .then(res=>{
                     setStudent({...res.data, designation:res.data.designation?.id});
                 })
-                
-            }
-        })
+                .catch(err => {
+                    console.error("Error fetching student by ID:", err);
+                    alert("Error fetching student data: " + (err.response?.data?.message || err.message));
+                });
+        }
     },[id]);
 
     
